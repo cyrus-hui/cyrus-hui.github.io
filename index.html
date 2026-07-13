@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyrus Hui</title>
+<meta name="description" content="Cyrus Hui — CS researcher working on trustworthy AI and uncertainty calibration under distribution shift.">
+
+<!-- Set theme before paint to avoid flash -->
+<script>
+  (function() {
+    var saved = localStorage.getItem('theme');
+    var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #F6F7F5;
+    --surface: #FFFFFF;
+    --ink: #1C2024;
+    --ink-soft: #5B6169;
+    --ink-faint: #90959C;
+    --line: #DEE1DC;
+    --accent: #35618C;
+    --accent-soft: #E7EEF3;
+    --tag: #8A7233;
+    --tag-bg: #FBF6EA;
+    --tag-border: #EBDFC0;
+
+    --font-display: 'Newsreader', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+
+    --maxw: 720px;
+    color-scheme: light;
+  }
+
+  html[data-theme="dark"] {
+    --bg: #14171A;
+    --surface: #1C2024;
+    --ink: #EDEFEE;
+    --ink-soft: #A8ADB4;
+    --ink-faint: #6B7078;
+    --line: #2B2F34;
+    --accent: #72A6D4;
+    --accent-soft: #1E2E3B;
+    --tag: #D9C285;
+    --tag-bg: #2A2416;
+    --tag-border: #4A3F22;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s ease;
+  }
+  a:hover, a:focus-visible { border-bottom-color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 72px 24px 64px;
+  }
+
+  /* ---- Theme toggle ---- */
+  .theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+  .theme-toggle svg { width: 17px; height: 17px; }
+  .theme-toggle .sun { display: none; }
+  html[data-theme="dark"] .theme-toggle .sun { display: block; }
+  html[data-theme="dark"] .theme-toggle .moon { display: none; }
+
+  /* ---- Calibration strip: signature element ---- */
+  .calbar { display: block; width: 100%; height: 22px; margin: 20px 0 40px; }
+  .calbar rect { fill: var(--accent); transition: fill 0.2s ease; }
+
+  header { margin-bottom: 48px; }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 10px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(32px, 5vw, 42px);
+    line-height: 1.15;
+    margin: 0 0 22px;
+    color: var(--ink);
+  }
+
+  .about p {
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin: 0 0 16px;
+  }
+  .about p.research {
+    font-family: var(--font-display);
+    font-size: 18.5px;
+    font-style: normal;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .about p:last-child { margin-bottom: 24px; }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+  }
+  .links a { color: var(--ink); border-bottom-color: var(--line); }
+  .links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  section {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 8px 28px;
+    padding: 34px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-top: 3px;
+  }
+
+  .content { min-width: 0; }
+
+  .entry { margin-bottom: 26px; }
+  .entry:last-child { margin-bottom: 0; }
+
+  h2.item-title {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 15.5px;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin: 0 0 10px;
+  }
+
+  p.body-text { margin: 0 0 12px; color: var(--ink-soft); font-size: 15px; }
+  p.body-text:last-child { margin-bottom: 0; }
+
+  .status-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.03em;
+    color: var(--tag);
+    background: var(--tag-bg);
+    border: 1px solid var(--tag-border);
+    border-radius: 3px;
+    padding: 2px 7px;
+    margin-bottom: 10px;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  ul.coursework {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  ul.coursework li {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    background: var(--accent-soft);
+    border-radius: 3px;
+    padding: 4px 9px;
+    transition: background 0.2s ease;
+  }
+
+  footer {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 56px 20px 48px; }
+    section { grid-template-columns: 1fr; gap: 6px; }
+    .label { padding-top: 0; }
+    .theme-toggle { top: 14px; right: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+  <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+</button>
+
+<div class="wrap">
+
+  <svg class="calbar" viewBox="0 0 400 22" preserveAspectRatio="none" aria-hidden="true">
+    <rect x="0"   y="10" width="4" height="12" opacity="0.25"/><rect x="8"   y="6"  width="4" height="16" opacity="0.35"/><rect x="16"  y="13" width="4" height="9"  opacity="0.2"/><rect x="24"  y="2"  width="4" height="20" opacity="0.55"/><rect x="32"  y="8"  width="4" height="14" opacity="0.4"/><rect x="40"  y="0"  width="4" height="22" opacity="0.7"/><rect x="48"  y="9"  width="4" height="13" opacity="0.35"/><rect x="56"  y="4"  width="4" height="18" opacity="0.5"/><rect x="64"  y="12" width="4" height="10" opacity="0.25"/><rect x="72"  y="1"  width="4" height="21" opacity="0.65"/><rect x="80"  y="7"  width="4" height="15" opacity="0.4"/><rect x="88"  y="14" width="4" height="8"  opacity="0.2"/><rect x="96"  y="3"  width="4" height="19" opacity="0.55"/><rect x="104" y="10" width="4" height="12" opacity="0.3"/><rect x="112" y="6"  width="4" height="16" opacity="0.45"/><rect x="120" y="0"  width="4" height="22" opacity="0.75"/><rect x="128" y="11" width="4" height="11" opacity="0.25"/><rect x="136" y="5"  width="4" height="17" opacity="0.5"/><rect x="144" y="9"  width="4" height="13" opacity="0.35"/><rect x="152" y="2"  width="4" height="20" opacity="0.6"/><rect x="160" y="13" width="4" height="9"  opacity="0.2"/><rect x="168" y="7"  width="4" height="15" opacity="0.4"/><rect x="176" y="0"  width="4" height="22" opacity="0.7"/><rect x="184" y="10" width="4" height="12" opacity="0.3"/><rect x="192" y="4"  width="4" height="18" opacity="0.5"/><rect x="200" y="12" width="4" height="10" opacity="0.22"/><rect x="208" y="1"  width="4" height="21" opacity="0.65"/><rect x="216" y="8"  width="4" height="14" opacity="0.38"/><rect x="224" y="6"  width="4" height="16" opacity="0.42"/><rect x="232" y="14" width="4" height="8"  opacity="0.2"/><rect x="240" y="3"  width="4" height="19" opacity="0.55"/><rect x="248" y="9"  width="4" height="13" opacity="0.32"/><rect x="256" y="0"  width="4" height="22" opacity="0.72"/><rect x="264" y="11" width="4" height="11" opacity="0.25"/><rect x="272" y="5"  width="4" height="17" opacity="0.48"/><rect x="280" y="13" width="4" height="9"  opacity="0.2"/><rect x="288" y="2"  width="4" height="20" opacity="0.58"/><rect x="296" y="8"  width="4" height="14" opacity="0.36"/><rect x="304" y="0"  width="4" height="22" opacity="0.68"/><rect x="312" y="10" width="4" height="12" opacity="0.28"/><rect x="320" y="6"  width="4" height="16" opacity="0.44"/><rect x="328" y="12" width="4" height="10" opacity="0.22"/><rect x="336" y="1"  width="4" height="21" opacity="0.62"/><rect x="344" y="9"  width="4" height="13" opacity="0.34"/><rect x="352" y="4"  width="4" height="18" opacity="0.5"/><rect x="360" y="14" width="4" height="8"  opacity="0.2"/><rect x="368" y="3"  width="4" height="19" opacity="0.56"/><rect x="376" y="7"  width="4" height="15" opacity="0.4"/><rect x="384" y="0"  width="4" height="22" opacity="0.7"/><rect x="392" y="11" width="4" height="11" opacity="0.26"/>
+  </svg>
+
+  <header>
+    <p class="eyebrow">4th-year CS &middot; York University</p>
+    <h1>Cyrus Hui</h1>
+    <div class="about">
+      <p>I'm a 4th-year Computer Science student at York University, applying to graduate school for Fall 2027 with the goal of pursuing a PhD. I'm open to both MSc and direct-entry PhD pathways, and I split my time between coursework, research, and outreach to potential supervisors this cycle.</p>
+      <p class="research">My research is in trustworthy AI: whether large language models&rsquo; expressions of uncertainty &mdash; both what they say and what their internals encode &mdash; stay calibrated when data shifts for causal reasons versus spurious ones. Most calibration work treats distribution shift as one category; I think the causal/spurious distinction changes what &ldquo;well-calibrated&rdquo; should even mean.</p>
+    </div>
+    <nav class="links">
+      <a href="mailto:cyrushui.yl@gmail.com">Email</a>
+      <a href="https://github.com/cyrus-hui">GitHub</a>
+      <a href="">CV</a>
+    </nav>
+  </header>
+
+  <section>
+    <div class="label">Independent<br>Research</div>
+    <div class="content">
+      <div class="entry">
+        <span class="status-tag">in progress</span>
+        <h2 class="item-title">Angle B: uncertainty alignment under causal vs. spurious shift</h2>
+        <p class="body-text">Testing verbal and internal LLM uncertainty across shift types, targeting a NeurIPS workshop submission (Aug/Sept 2026).</p>
+      </div>
+      <div class="entry">
+        <span class="status-tag">in progress</span>
+        <h2 class="item-title">LLM-Traffic</h2>
+        <p class="body-text">Collaboration on applying LLMs to traffic and air-pollution modeling, with Prof. Enas AlTarawneh.</p>
+      </div>
+      <div class="entry">
+        <h2 class="item-title">Model Collapse</h2>
+        <p class="body-text">Standard benchmark scores may be a lagging, even deceptive signal of model collapse under iterative synthetic fine-tuning &mdash; testing whether perplexity and distributional metrics detect degradation earlier than benchmark accuracy, and whether that gap widens across generations.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="label">Experience</div>
+    <div class="content">
+
+      <div class="entry">
+        <h2 class="item-title">Software Developer Intern &mdash; Ontario Public Service</h2>
+        <p class="meta">Jan 2026 &ndash; Present</p>
+        <p class="body-text">Built an automated unit-testing suite from early prototypes and integrated it into the software development lifecycle, cutting manual QA time by 5+ hours/week. Authored technical documentation covering design decisions and system capabilities, and collaborated with engineering and business teams to align front-end features with both user and business requirements.</p>
+      </div>
+
+      <div class="entry">
+        <h2 class="item-title">Machine Learning Research Intern &mdash; Algoverse</h2>
+        <p class="meta">Sept 2025 &ndash; Dec 2025</p>
+        <p class="body-text">Benchmarked state-of-the-art model-editing methods (MEMIT, ROME, AlphaEdit), surfacing failure modes in knowledge localization relevant to model auditing and interpretability. Built custom entailment datasets and reproducible evaluation pipelines to quantify model consistency, robustness, and bias &mdash; precursors to uncertainty-aware auditing methods.</p>
+      </div>
+
+      <div class="entry">
+        <h2 class="item-title">Undergraduate Researcher &mdash; Lassonde School of Engineering, York University</h2>
+        <p class="meta">May 2024 &ndash; Aug 2024 &middot; Advisor: Prof. Peter Lian</p>
+        <p class="body-text">Developed end-to-end biomedical data pre-processing and normalization pipelines, reducing SpO&#8322; errors to 0.54%, and built regression and classification models for blood pressure prediction and COVID-19 detection. Designed a real-time, cuffless biomedical monitoring prototype and presented results at a research conference.</p>
+      </div>
+
+      <div class="entry">
+        <h2 class="item-title">Research Assistant &mdash; Lassonde School of Engineering, York University</h2>
+        <p class="meta">Jan 2024 &ndash; Apr 2024 &middot; Advisor: Prof. Enas AlTarawneh</p>
+        <p class="body-text">Implemented Graph Convolutional Networks for emotion recognition in conversation, capturing long-range dependencies across multi-turn dialogues. Built distributed ETL pipelines using PyTorch Geometric and Hadoop to transform multi-modal conversational data into graph-structured embeddings at scale.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="label">Projects</div>
+    <div class="content">
+      <div class="entry">
+        <h2 class="item-title">Course Recommendation System</h2>
+        <p class="body-text">A semantic course recommendation system processing 5,500+ course descriptions using Sentence Transformer embeddings and cosine similarity to match student interests with relevant courses. Reduced query latency by 60% through NumPy-based vectorization and a pre-computed embedding cache. &middot; <a href="https://github.com/cyrus-hui/CourseRec">code</a></p>
+      </div>
+      <div class="entry">
+        <h2 class="item-title">Option Pricing Models Using Numerical and Stochastic Methods</h2>
+        <p class="body-text">Implemented explicit and Crank&ndash;Nicolson schemes for the Black&ndash;Scholes PDE, achieving &lt;1% deviation from closed-form pricing, and cross-validated results via Monte Carlo simulation. Optimized performance by 35% through grid refinement and efficient payoff surface visualization. &middot; <a href="https://github.com/cyrus-hui/option-pricing-numerical-methods">code</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!--
+  <section>
+    <div class="label">Coursework</div>
+    <div class="content">
+      <ul class="coursework">
+        <li>EECS 5326 &mdash; AI</li>
+        <li>EECS 6602 &mdash; Stochastic Processes</li>
+        <li>EECS 4422 &mdash; Computer Vision</li>
+        <li>EECS 4405 &mdash; Advanced ML</li>
+      </ul>
+    </div>
+  </section>
+  -->
+
+  <footer>
+    &copy; 2026 Cyrus Hui &middot; built with GitHub Pages
+  </footer>
+
+</div>
+
+<script>
+  document.getElementById('themeToggle').addEventListener('click', function() {
+    var html = document.documentElement;
+    var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+</script>
+
+</body>
+</html>
