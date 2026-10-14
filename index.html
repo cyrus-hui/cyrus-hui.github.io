@@ -4,13 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cyrus Hui</title>
-<meta name="description" content="Cyrus Hui — CS researcher working on trustworthy AI and uncertainty calibration under distribution shift.">
+<meta name="description" content="Cyrus Hui — Computer Science student at York University working on AI safety: when models fail silently, and what reveals it.">
 
 <!-- Set theme before paint to avoid flash -->
 <script>
   (function() {
-    var saved = localStorage.getItem('theme');
-    var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    var theme = 'light';
+    try {
+      var saved = localStorage.getItem('theme');
+      theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    } catch (e) {}
     document.documentElement.setAttribute('data-theme', theme);
   })();
 </script>
@@ -25,10 +28,11 @@
     --surface: #FFFFFF;
     --ink: #1C2024;
     --ink-soft: #5B6169;
-    --ink-faint: #90959C;
+    --ink-faint: #868B92;
     --line: #DEE1DC;
     --accent: #35618C;
     --accent-soft: #E7EEF3;
+    --accent-border: #C9D8E5;
     --tag: #8A7233;
     --tag-bg: #FBF6EA;
     --tag-border: #EBDFC0;
@@ -46,10 +50,11 @@
     --surface: #1C2024;
     --ink: #EDEFEE;
     --ink-soft: #A8ADB4;
-    --ink-faint: #6B7078;
+    --ink-faint: #7A7F87;
     --line: #2B2F34;
     --accent: #72A6D4;
     --accent-soft: #1E2E3B;
+    --accent-border: #2E4558;
     --tag: #D9C285;
     --tag-bg: #2A2416;
     --tag-border: #4A3F22;
@@ -180,13 +185,14 @@
 
   .content { min-width: 0; }
 
-  .entry { margin-bottom: 26px; }
+  .entry { margin-bottom: 28px; }
   .entry:last-child { margin-bottom: 0; }
 
   h2.item-title {
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 15.5px;
+    line-height: 1.45;
     margin: 0 0 4px;
     color: var(--ink);
   }
@@ -194,11 +200,12 @@
   .meta {
     font-family: var(--font-mono);
     font-size: 12.5px;
+    line-height: 1.5;
     color: var(--ink-faint);
     margin: 0 0 10px;
   }
 
-  p.body-text { margin: 0 0 12px; color: var(--ink-soft); font-size: 15px; }
+  p.body-text { margin: 0 0 10px; color: var(--ink-soft); font-size: 15px; }
   p.body-text:last-child { margin-bottom: 0; }
 
   .status-tag {
@@ -211,8 +218,53 @@
     border: 1px solid var(--tag-border);
     border-radius: 3px;
     padding: 2px 7px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  .status-tag.accepted {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+  }
+  .status-tag.quiet {
+    color: var(--ink-faint);
+    background: transparent;
+    border-color: var(--line);
+  }
+
+  /* ---- Publications ---- */
+  .pub-authors { margin: 0 0 2px; font-size: 14.5px; color: var(--ink-soft); }
+  .pub-authors strong { color: var(--ink); font-weight: 600; }
+  .pub-venue { margin: 0 0 6px; font-size: 14.5px; color: var(--ink-soft); }
+  .pub-links {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+  }
+  .pub-note { font-size: 14px; color: var(--ink-faint); margin: 6px 0 0; }
+
+  /* ---- Awards ---- */
+  ul.plain {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.plain li {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 15px;
+    color: var(--ink-soft);
+    padding: 3px 0;
+  }
+  ul.plain li .yr {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    padding-top: 2px;
   }
 
   ul.coursework {
@@ -243,8 +295,8 @@
   }
 
   @media (max-width: 600px) {
-    .wrap { padding: 56px 20px 48px; }
-    section { grid-template-columns: 1fr; gap: 6px; }
+    .wrap { padding: 56px 16px 48px; }
+    section { grid-template-columns: 1fr; gap: 10px; }
     .label { padding-top: 0; }
     .theme-toggle { top: 14px; right: 14px; }
   }
@@ -267,64 +319,103 @@
     <p class="eyebrow">4th-year CS &middot; York University</p>
     <h1>Cyrus Hui</h1>
     <div class="about">
-      <p>I'm a 4th-year Computer Science student at York University, applying to graduate school for Fall 2027 with the goal of pursuing a PhD. I'm open to both MSc and direct-entry PhD pathways, and I split my time between coursework, research, and outreach to potential supervisors this cycle.</p>
-      <p class="research">My research is in trustworthy AI: whether large language models&rsquo; expressions of uncertainty &mdash; both what they say and what their internals encode &mdash; stay calibrated when data shifts for causal reasons versus spurious ones. Most calibration work treats distribution shift as one category; I think the causal/spurious distinction changes what &ldquo;well-calibrated&rdquo; should even mean.</p>
+      <p>I&rsquo;m a fourth-year Computer Science student at York University&rsquo;s Lassonde School of Engineering, graduating in 2027, and spent a semester on exchange at Waseda University in Tokyo. I research LLM reliability with Prof. Enas AlTarawneh and run my own project on model collapse.</p>
+      <p class="research">I work on AI safety through evaluation, interpretability and alignment, using uncertainty quantification and causal inference to find out when models fail silently and what reveals it. My current work shows that standard benchmarks can miss a language model degrading under recursive training on its own outputs, while a cheap calibration-gap signal catches it in all 15 seeds.</p>
     </div>
     <nav class="links">
       <a href="mailto:cyrushui.yl@gmail.com">Email</a>
       <a href="https://github.com/cyrus-hui">GitHub</a>
-      <a href="">CV</a>
+      <a href="https://www.linkedin.com/in/cyrushui">LinkedIn</a>
+      <a href="Cyrus_Hui_CV.pdf">CV</a>
     </nav>
   </header>
 
   <section>
-    <div class="label">Independent<br>Research</div>
+    <div class="label">Publications</div>
     <div class="content">
+
       <div class="entry">
-        <span class="status-tag">in progress</span>
-        <h2 class="item-title">Angle B: uncertainty alignment under causal vs. spurious shift</h2>
-        <p class="body-text">Testing verbal and internal LLM uncertainty across shift types, targeting a NeurIPS workshop submission (Aug/Sept 2026).</p>
+        <span class="status-tag accepted">accepted</span>
+        <h2 class="item-title">The Benchmark Blind Spot: Lag Profiles of Distributional Model Collapse and a Low-Cost Calibration-Gap Signal</h2>
+        <p class="pub-authors"><strong>Cyrus Hui</strong></p>
+        <p class="pub-venue">NeurIPS 2026 workshops: Can We Trust AI Evaluation? (TAE, poster) and NewInML</p>
+        <div class="pub-links">
+          <!-- Add the arXiv link here once it's posted: <a href="https://arxiv.org/abs/XXXX.XXXXX">paper</a> -->
+          <a href="https://github.com/cyrus-hui/benchmark-blind-spot">code</a>
+        </div>
+        <p class="pub-note">Main-track extension in preparation.</p>
       </div>
+
       <div class="entry">
-        <span class="status-tag">in progress</span>
-        <h2 class="item-title">LLM-Traffic</h2>
-        <p class="body-text">Collaboration on applying LLMs to traffic and air-pollution modeling, with Prof. Enas AlTarawneh.</p>
+        <span class="status-tag accepted">accepted</span>
+        <h2 class="item-title">Dose Blindness and Motivated Confabulation: A Multi-Layer Behavioral Audit of LLM Health-Impact Recommendations</h2>
+        <p class="pub-authors"><strong>Cyrus Hui</strong>, Enas AlTarawneh</p>
+        <p class="pub-venue">NeurIPS 2026 workshop: NewInML</p>
       </div>
+
       <div class="entry">
-        <h2 class="item-title">Model Collapse</h2>
-        <p class="body-text">Standard benchmark scores may be a lagging, even deceptive signal of model collapse under iterative synthetic fine-tuning &mdash; testing whether perplexity and distributional metrics detect degradation earlier than benchmark accuracy, and whether that gap widens across generations.</p>
+        <span class="status-tag">under review</span>
+        <h2 class="item-title">When Do Per-Response Audits Predict Population Outcomes? Language-Model Route Advice on a Road Network</h2>
+        <p class="pub-authors"><strong>Cyrus Hui</strong>, Enas AlTarawneh</p>
+        <p class="pub-venue">ACL Rolling Review. Extends <span style="white-space:nowrap">&ldquo;Dose Blindness&rdquo;</span>.</p>
       </div>
+
+      <div class="entry">
+        <span class="status-tag quiet">in preparation</span>
+        <h2 class="item-title">A Survey of Traffic-Related Air Pollution Prediction Using Machine Learning</h2>
+        <p class="pub-authors">Esther Bino, Antonella Walton, <strong>Cyrus Hui</strong>, Enas AlTarawneh</p>
+      </div>
+
     </div>
   </section>
 
   <section>
-    <div class="label">Experience</div>
+    <div class="label">Research</div>
     <div class="content">
 
       <div class="entry">
-        <h2 class="item-title">Software Developer Intern &mdash; Ontario Public Service</h2>
-        <p class="meta">Jan 2026 &ndash; Present</p>
-        <p class="body-text">Built an automated unit-testing suite from early prototypes and integrated it into the software development lifecycle, cutting manual QA time by 5+ hours/week. Authored technical documentation covering design decisions and system capabilities, and collaborated with engineering and business teams to align front-end features with both user and business requirements.</p>
+        <span class="status-tag">ongoing</span>
+        <h2 class="item-title">Independent Researcher &mdash; Model Collapse in Self-Trained LLMs</h2>
+        <p class="meta">May 2026 &ndash; Present</p>
+        <p class="body-text">I repeatedly fine-tune GPT-2 Medium and SmolLM2-1.7B on their own outputs (15 seeds, up to 13 generations), with decision rules fixed before reading any results. Distributional metrics signal collapse from the first generation, but standard benchmarks register it late or not at all, and at 1.7B several rise slightly as the model degrades. A calibration gap (log-perplexity minus predictive entropy, from the same forward pass as perplexity) rises monotonically in all 15 seeds.</p>
+        <p class="body-text">Since submission, all pre-registered and not yet peer-reviewed: a 63-cell negative control keeps the gap far below its threshold, and in a 126-run severity grid at 345M one fixed threshold separates exposed runs from controls in every evaluable reading. A filtering intervention built on the gap did no better than random removal and is reported as falsified, one of four of my own hypotheses that failed their pre-registered tests. I&rsquo;m now pre-registering a test of whether the gap after one generation forecasts later damage.</p>
+      </div>
+
+      <div class="entry">
+        <h2 class="item-title">Research Assistant &mdash; LLM Health-Impact Behavioral Audit</h2>
+        <p class="meta">York University &middot; Advisor: Prof. Enas AlTarawneh &middot; May &ndash; Aug 2026</p>
+        <p class="body-text">Designed a three-layer behavioral audit of five open-source LLMs on pollution-aware routing advice, grounded in Glasgow road-network and air-quality sensor data (23,700+ responses). Identified a two-component failure mode, prompt-responsive anchoring versus instruction-invariant &ldquo;motivated confabulation&rdquo;, and found that across model families, higher engagement can mask lower accuracy.</p>
       </div>
 
       <div class="entry">
         <h2 class="item-title">Machine Learning Research Intern &mdash; Algoverse</h2>
-        <p class="meta">Sept 2025 &ndash; Dec 2025</p>
-        <p class="body-text">Benchmarked state-of-the-art model-editing methods (MEMIT, ROME, AlphaEdit), surfacing failure modes in knowledge localization relevant to model auditing and interpretability. Built custom entailment datasets and reproducible evaluation pipelines to quantify model consistency, robustness, and bias &mdash; precursors to uncertainty-aware auditing methods.</p>
+        <p class="meta">Remote &middot; Sept &ndash; Dec 2025</p>
+        <p class="body-text">Benchmarked model-editing methods (MEMIT, ROME, AlphaEdit) across three open-source LLMs and 1,200+ edits to evaluate the trade-off between knowledge localization and generalization. Built entailment datasets (3,000+ labeled examples) and evaluation pipelines to measure consistency, robustness and bias, working in a team of four researchers.</p>
       </div>
 
       <div class="entry">
-        <h2 class="item-title">Undergraduate Researcher &mdash; Lassonde School of Engineering, York University</h2>
-        <p class="meta">May 2024 &ndash; Aug 2024 &middot; Advisor: Prof. Peter Lian</p>
-        <p class="body-text">Developed end-to-end biomedical data pre-processing and normalization pipelines, reducing SpO&#8322; errors to 0.54%, and built regression and classification models for blood pressure prediction and COVID-19 detection. Designed a real-time, cuffless biomedical monitoring prototype and presented results at a research conference.</p>
+        <h2 class="item-title">Undergraduate Researcher &mdash; Cuffless Biomedical Monitoring</h2>
+        <p class="meta">York University &middot; Advisor: Prof. Peter Lian &middot; May &ndash; Aug 2024</p>
+        <p class="body-text">Built biomedical data pre-processing and normalization pipelines, reducing SpO&#8322; error to 0.54%, and ML models for blood-pressure prediction and COVID-19 detection. Designed a real-time, cuffless monitoring prototype and presented it as a poster at the Lassonde Undergraduate Research Conference.</p>
       </div>
 
       <div class="entry">
-        <h2 class="item-title">Research Assistant &mdash; Lassonde School of Engineering, York University</h2>
-        <p class="meta">Jan 2024 &ndash; Apr 2024 &middot; Advisor: Prof. Enas AlTarawneh</p>
-        <p class="body-text">Implemented Graph Convolutional Networks for emotion recognition in conversation, capturing long-range dependencies across multi-turn dialogues. Built distributed ETL pipelines using PyTorch Geometric and Hadoop to transform multi-modal conversational data into graph-structured embeddings at scale.</p>
+        <h2 class="item-title">Research Assistant &mdash; Emotion Recognition in Conversation</h2>
+        <p class="meta">York University &middot; Advisor: Prof. Enas AlTarawneh &middot; Jan &ndash; Apr 2024</p>
+        <p class="body-text">Implemented graph convolutional networks on a 10,000+ utterance multi-turn dialogue dataset, improving accuracy by 6% over an LSTM baseline. Optimized distributed ETL pipelines (PyTorch Geometric, Hadoop), cutting preprocessing time by 40%.</p>
       </div>
 
+    </div>
+  </section>
+
+  <section>
+    <div class="label">Other<br>Experience</div>
+    <div class="content">
+      <div class="entry">
+        <h2 class="item-title">Software Developer Intern &mdash; Ontario Public Service</h2>
+        <p class="meta">Toronto &middot; Jan &ndash; Aug 2026</p>
+        <p class="body-text">Built an automated unit-testing suite from early prototypes, cutting manual testing by 5+ hours a week, and refactored a core module shared by three downstream features. Led cross-functional delivery of a new feature and mentored incoming interns.</p>
+      </div>
     </div>
   </section>
 
@@ -339,6 +430,18 @@
         <h2 class="item-title">Option Pricing Models Using Numerical and Stochastic Methods</h2>
         <p class="body-text">Implemented explicit and Crank&ndash;Nicolson schemes for the Black&ndash;Scholes PDE, achieving &lt;1% deviation from closed-form pricing, and cross-validated results via Monte Carlo simulation. Optimized performance by 35% through grid refinement and efficient payoff surface visualization. &middot; <a href="https://github.com/cyrus-hui/option-pricing-numerical-methods">code</a></p>
       </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="label">Awards</div>
+    <div class="content">
+      <ul class="plain">
+        <li><span>Lassonde Undergraduate Research Award</span><span class="yr">2024</span></li>
+        <li><span>York International Mobility Award</span><span class="yr">2024</span></li>
+        <li><span>York University Entrance Scholarship</span><span class="yr">2022&ndash;2024</span></li>
+        <li><span>Dean&rsquo;s List</span><span class="yr">2022&ndash;present</span></li>
+      </ul>
     </div>
   </section>
 
@@ -357,7 +460,7 @@
   -->
 
   <footer>
-    &copy; 2026 Cyrus Hui &middot; built with GitHub Pages
+    &copy; 2026 Cyrus Hui &middot; updated October 2026
   </footer>
 
 </div>
@@ -367,7 +470,7 @@
     var html = document.documentElement;
     var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
+    try { localStorage.setItem('theme', next); } catch (e) {}
   });
 </script>
 
